@@ -1,0 +1,34 @@
+require 'launchy'
+puts
+puts "Welcome. What is your email address?"
+puts
+email_input = gets.chomp
+puts
+puts "Thanks, let me check if you have access."
+puts
+if User.exists?(email: email_input)
+  puts "Cool, here you go."
+  puts "Enter 1 to visit a short url. Enter 2 to create a short url."
+  puts
+  options_input = gets.chomp
+  case options_input
+  when '1'
+    puts
+    puts "Type in the shortened URL."
+    puts
+    short_url = gets.chomp
+    open_url = ShortenedUrl.find_by_short_url(short_url).long_url
+    Launchy.open open_url
+  when '2'
+    puts
+    puts "Enter a long url."
+    puts
+    long_url = gets.chomp
+    submitter_obj = User.find_by_email(email_input)
+    short_url_obj = ShortenedUrl.create(submitter_obj, long_url)
+    puts
+    puts "Short url is: #{short_url_obj.short_url}"
+  end
+else
+  puts "Your email is not recognized."
+end
